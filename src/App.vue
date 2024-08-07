@@ -5,14 +5,16 @@
 			.error-message An error occurred while loading the schedule. Please try again later.
 	template(v-else-if="schedule && sessions")
 		.modal-overlay(v-if="showFilterModal", @click.stop="showFilterModal = false")
-			.modal-box(@click.stop="")
-				h3 Tracks
-				.checkbox-line(v-for="track in allTracks", :key="track.value", :style="{'--track-color': track.color}")
-					bunt-checkbox(type="checkbox", :label="track.label", :name="track.value + track.label", v-model="track.selected", :value="track.value", @input="onlyFavs = false")
-					.track-description(v-if="getLocalizedString(track.description).length") {{ getLocalizedString(track.description) }}
+			//- .modal-box(@click.stop="")
+			//- 	h3 Tracks
+			//- 	.checkbox-line(v-for="track in allTracks", :key="track.value", :style="{'--track-color': track.color}")
+			//- 		bunt-checkbox(type="checkbox", :label="track.label", :name="track.value + track.label", v-model="track.selected", :value="track.value", @input="onlyFavs = false")
+			//- 		.track-description(v-if="getLocalizedString(track.description).length") {{ getLocalizedString(track.description) }}
 		.settings
-			v-select(v-model="selectedTrack", :options="allTracks", multiple, placeholder="Tracks", maxHeight="50px")
-			bunt-button.filter-tracks(v-if="this.schedule.tracks.length", @click="showFilterModal=true")
+			v-select(v-model="selectedTracks", :closeOnSelect="false", :options="allTracks", multiple, placeholder="Tracks")
+			v-select(v-model="selectedRooms", :closeOnSelect="false", :options="allRooms", multiple, placeholder="Rooms")
+			v-select(v-model="selectedSessionTypes", :closeOnSelect="false", :options="allSessionTypes", multiple, placeholder="Session Types")
+			//- bunt-button.filter-tracks(v-if="this.schedule.tracks.length", @click="showFilterModal=true")
 				svg#filter(viewBox="0 0 752 752")
 					path(d="m401.57 264.71h-174.75c-6.6289 0-11.84 5.2109-11.84 11.84 0 6.6289 5.2109 11.84 11.84 11.84h174.75c5.2109 17.523 21.312 30.309 40.727 30.309 18.941 0 35.52-12.785 40.254-30.309h43.098c6.6289 0 11.84-5.2109 11.84-11.84 0-6.6289-5.2109-11.84-11.84-11.84h-43.098c-5.2109-17.523-21.312-30.309-40.254-30.309-19.414 0-35.516 12.785-40.727 30.309zm58.723 11.84c0 10.418-8.5234 18.469-18.469 18.469s-18.469-8.0508-18.469-18.469 8.5234-18.469 18.469-18.469c9.4727-0.003906 18.469 8.0469 18.469 18.469z")
 					path(d="m259.5 359.43h-32.676c-6.6289 0-11.84 5.2109-11.84 11.84s5.2109 11.84 11.84 11.84h32.676c5.2109 17.523 21.312 30.309 40.727 30.309 18.941 0 35.52-12.785 40.254-30.309h185.17c6.6289 0 11.84-5.2109 11.84-11.84s-5.2109-11.84-11.84-11.84h-185.17c-5.2109-17.523-21.312-30.309-40.254-30.309-19.418 0-35.52 12.785-40.73 30.309zm58.723 11.84c0 10.418-8.5234 18.469-18.469 18.469-9.9453 0-18.469-8.0508-18.469-18.469s8.5234-18.469 18.469-18.469c9.9453 0 18.469 8.0508 18.469 18.469z")
@@ -109,8 +111,12 @@ export default {
 			allTracks: [],
 			onlyFavs: false,
 			scheduleError: false,
-			selectedTrack: [],
+			selectedTracks: [],
 			showModal: false,
+			allRooms: [],
+			allSessionTypes: [],
+			selectedRooms: [],
+			selectedSessionTypes: [],
 		}
 	},
 	computed: {
@@ -222,6 +228,7 @@ export default {
 			this.onWindowResize()
 		}
 		this.schedule.tracks.forEach(t => { t.value = t.id; t.label = getLocalizedString(t.name); this.allTracks.push(t) })
+		this.schedule.rooms.forEach(t => { t.value = t.id; t.label = getLocalizedString(t.name); this.allRooms.push(t) })
 		this.favs = this.pruneFavs(await this.loadFavs(), this.schedule)
 		const fragment = window.location.hash.slice(1)
 		if (fragment && fragment.length === 10) {
@@ -503,6 +510,7 @@ export default {
   font-family: inherit;
   position: relative;
   *box-sizing: border-box;
+  width: 200px
 }
 :root {
   --vs-transition-timing-function: cubic-bezier(1, 0.5, 0.8, 1);
