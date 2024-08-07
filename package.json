@@ -4,7 +4,7 @@
   "description": "",
   "author": "",
   "scripts": {
-    "start": "vue-cli-service serve",
+    "start": "cross-env NODE_OPTIONS=--openssl-legacy-provider vue-cli-service serve",
     "build": "vue-cli-service build",
     "build:lib": "VUE_CLI_SERVICE_CONFIG_PATH=./vue.config.lib.js vue-cli-service build --target lib --formats commonjs src/lib.js",
     "build:wc": "npx vue-cli-service build --target wc --inline-vue --name pretalx-schedule src/App.vue",
@@ -22,7 +22,9 @@
     "moment-locales-webpack-plugin": "^1.2.0",
     "moment-timezone": "^0.5.31",
     "moment-timezone-data-webpack-plugin": "^1.3.0",
-    "vue": "^2.6.11"
+    "vue": "^2.6.11",
+    "vue-resource": "^1.5.3",
+    "vue-select": "^3.20.3"
   },
   "devDependencies": {
     "@babel/plugin-proposal-json-strings": "^7.10.4",
